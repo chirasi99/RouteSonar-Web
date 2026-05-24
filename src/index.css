@@ -1,13 +1,183 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* src/index.css */
+
+/* ── Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800,900&f[]=satoshi@400,500,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ───────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #060d18;
+    color: #c8d4e3;
+    font-family: 'Satoshi', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ── Design tokens ──────────────────────────────────────────────────── */
+:root {
+  --brand:    #10d9a0;
+  --brand-dim:#0db88a;
+  --accent:   #38b2f8;
+  --bg:       #060d18;
+  --bg-card:  #0c1628;
+  --border:   rgba(255,255,255,0.055);
+  --border-h: rgba(16,217,160,0.28);
+}
+
+/* ── Global utilities ───────────────────────────────────────────────── */
+@layer utilities {
+
+  /* ─ Font ─ */
+  .font-display { font-family: 'Cabinet Grotesk', sans-serif; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     HERO ENTRANCE ANIMATIONS
+     These run once when the component first mounts.
+     fill-mode: both means:
+       • "backwards" → element starts at the FROM state before delay ends
+         (prevents the flash of visible-then-hidden)
+       • "forwards"  → element stays at the TO state after animation ends
+     We add a base animation-fill-mode: both to .afu so the hero is
+     always visible after its animation completes.
+  ─────────────────────────────────────────────────────────────────── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  .afu {
+    animation: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* Staggered delays for hero children */
+  .afu-d0 { animation-delay: 0s;    }
+  .afu-d1 { animation-delay: 0.12s; }
+  .afu-d2 { animation-delay: 0.24s; }
+  .afu-d3 { animation-delay: 0.38s; }
+  .afu-d4 { animation-delay: 0.52s; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SCROLL REVEAL
+     Elements start invisible. JS adds .rs-visible when they scroll
+     into view. We use a separate class (not .afu) so they never
+     conflict with the hero entrance animation.
+  ─────────────────────────────────────────────────────────────────── */
+  .rs-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition:
+      opacity  0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .rs-reveal.rs-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Stagger delays for sibling cards */
+  .rs-d1 { transition-delay: 0.05s; }
+  .rs-d2 { transition-delay: 0.12s; }
+  .rs-d3 { transition-delay: 0.19s; }
+  .rs-d4 { transition-delay: 0.26s; }
+  .rs-d5 { transition-delay: 0.33s; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     STATS — shimmer gradient on numbers
+  ─────────────────────────────────────────────────────────────────── */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  .stat-text {
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #10d9a0 35%,
+      #ffffff 55%,
+      #10d9a0 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     GLOW CARD — lift + teal border on hover
+  ─────────────────────────────────────────────────────────────────── */
+  .glow-card {
+    transition:
+      transform    0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow   0.3s ease,
+      border-color 0.3s ease;
+  }
+  .glow-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(16, 217, 160, 0.3) !important;
+    box-shadow:
+      0 24px 64px -16px rgba(16, 217, 160, 0.12),
+      0 8px  24px -8px  rgba(0, 0, 0, 0.5);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     DOT PULSE — logo dot / badge dot
+  ─────────────────────────────────────────────────────────────────── */
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 1;   transform: scale(1);   }
+    50%       { opacity: 0.3; transform: scale(1.6); }
+  }
+  .dot-pulse { animation: dot-pulse 2.4s ease-in-out infinite; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     RING PULSE — step circles
+  ─────────────────────────────────────────────────────────────────── */
+  @keyframes ring-pulse {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(16,217,160,0.5); }
+    50%       { box-shadow: 0 0 0 10px rgba(16,217,160,0);  }
+  }
+  .ring-pulse { animation: ring-pulse 2.8s ease-in-out infinite; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION TYPOGRAPHY HELPERS
+  ─────────────────────────────────────────────────────────────────── */
+  .section-eyebrow {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #10d9a0;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+  }
+  .section-sub {
+    color: #94a3b8;
+    line-height: 1.7;
+    font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  }
+
+  /* ── Accent gradient line (top of dark sections) ── */
+  .accent-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(16,217,160,0.4),
+      transparent
+    );
+  }
 }
