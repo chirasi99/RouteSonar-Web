@@ -33,7 +33,7 @@ const useSiteData = () => {
         );
         const news = newsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        const [navbar, hero, stats, features, steps, pricing, testimonials, footer] =
+        const [navbar, hero, stats, features, steps, pricing, clients, testimonials, footer] =
           await Promise.all([
             fetchMain("navbar"),
             fetchMain("hero"),
@@ -41,6 +41,7 @@ const useSiteData = () => {
             fetchMain("features"),
             fetchMain("steps"),
             fetchMain("pricing"),
+            fetchMain("clients"),
             fetchMain("testimonials"),
             fetchMain("footer"),
           ]);
@@ -52,6 +53,7 @@ const useSiteData = () => {
           features:     features     as SiteData["features"],
           steps:        steps        as SiteData["steps"],
           pricing:      pricing      as SiteData["pricing"],
+          clients:      clients      as SiteData["clients"],
           testimonials: testimonials as SiteData["testimonials"],
           news:         news         as SiteData["news"],
           footer:       footer       as SiteData["footer"],

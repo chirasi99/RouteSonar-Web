@@ -19,14 +19,18 @@ export interface FeaturesData { title: string; subtitle: string; items: FeatureI
 export interface StepItem  { step: string; tag: string; title: string; description: string }
 export interface StepsData { title: string; subtitle: string; items: StepItem[] }
 
-export interface PricingItem {
-  name: string; price: string; period: string; description: string;
-  popular: boolean; ctaText: string; ctaLink: string; features: string[];
+export interface PricingPlan {
+  name: string; price: string;
+  priceUnit: string; points: string[];
+  ctaText: string; ctaLink: string; popular?: boolean;
 }
-export interface PricingData { title: string; subtitle: string; items: PricingItem[] }
+export interface PricingData { eyebrow: string; title: string; subtitle: string; plans: PricingPlan[] }
 
 export interface TestimonialItem  { name: string; role: string; quote: string }
 export interface TestimonialsData { title: string; items: TestimonialItem[] }
+
+export interface ClientLogo { name: string; logo: string; href?: string }
+export interface ClientsData { eyebrow: string; title: string; logos: ClientLogo[] }
 
 export interface NewsPost { id: string; title: string; date: string; excerpt: string; link: string }
 
@@ -40,5 +44,5 @@ export interface FooterData {
 export interface SiteData {
   navbar: NavbarData | null; hero: HeroData | null; stats: StatsData | null;
   features: FeaturesData | null; steps: StepsData | null; pricing: PricingData | null;
-  testimonials: TestimonialsData | null; news: NewsPost[]; footer: FooterData | null;
+  clients: ClientsData | null; testimonials: TestimonialsData | null; news: NewsPost[]; footer: FooterData | null;
 }
